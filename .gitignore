@@ -2,9 +2,14 @@
 .Rhistory
 .RData
 .Ruserdata
+.gitignore
 
 data/
+app/rsconnect/
 
 *.txt
 *.csv
 *.rds
+*.zip
+
+00-data-cleaning.R

@@ -1,0 +1,79 @@
+---
+title: "Data Movie Analytics"
+author: Willber Nascimento
+date: 22 December, 2020
+output: ioslides_presentation
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, comment = FALSE)
+library(readxl)
+library(plotly)
+library(stringr)
+
+movies <- readRDS('../data/manipulated/movies_2000.rds')
+
+movies_metascore <- movies[!is.na(movies$metascore) & movies$year %in% seq(2000, 2020), ]
+
+
+metascore.variacao <-
+  movies_metascore %>%
+  filter(year %in% seq(2000, 2020)) %>%
+  group_by(year) %>%
+  summarise(metascore.mean = mean(metascore))
+
+```
+
+## Introduction
+
+This project create data analysis and visualizations about movies. We use a dataset with movie information from IMDb site. In this step we will analyze the **metascore** metric about movies.
+
+- You can see the interactive app on: https://willber1942.shinyapps.io/Data-Movie-Analytics/
+- Data Set: A IMDb dataset made public by **Stefano Leone** in [his Kaggle](https://www.kaggle.com/stefanoleone992/imdb-extensive-dataset)
+- Unity of analysis: A movie entry by year of release 
+- Time Series: 2000 to 2020
+- Number os cases: 41,138 movies
+
+## Metascore: evaluating the films
+
+- Acording to IMDb is a rating score of a movie. Several cinema critics in the world evaluate the film and IMDb takes a weighted average of these evaluations. The higher the metascore, the more positive ratings a film has. 
+
+-  In the plots below you can see the distribution of the grades of the films evaluated since the 2000s. You can mouse over to see the metascore and the frequency of films in that category. 
+
+
+## 
+- In the histogram the metascore is on the x axis and it goes from 0 to 100. the y axis represents the number of films evaluated in that metascore. Typically, most films receive a metascore between 40 and 70.
+
+```{r }
+plot_ly(
+  subset(movies_metascore, year == '2020'),
+  x = ~ metascore, 
+  type = "histogram"
+  )
+```
+
+##
+
+- In the line graph we can see the boxplot and the average of the metascore over time (the blue line). You can use the mouse to view information one at a time. Click Line mean or boxplot in the legend to see just one option.
+
+```{r}
+plot_ly(
+  metascore.variacao,
+  name='Line mean',
+  x = ~ year,
+  y = ~ metascore.mean,
+  type = 'scatter',
+  mode = 'lines'
+) %>% 
+  add_boxplot(
+    name = 'Boxplot',
+    x = ~ year,
+    y = ~ metascore, 
+    data = movies_metascore,
+    fillcolor=list(width=0.5, color='rgb(127, 166, 238)'),
+    #line=list(width=0.5, color='rgb(127, 166, 238)',
+    line=list(width=1, color='rgb(127, 166, 238)'))
+
+```
+
